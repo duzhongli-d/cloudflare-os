@@ -15,5 +15,7 @@ console.log(
 execFileSync(
   "pnpm",
   ["exec", "vite", "build", "-c", "vite.config.ts", ...(watch ? ["--watch"] : [])],
-  { cwd: pkgDir, stdio: "inherit" },
+  // shell: true is required on Node 22+ Windows: CVE-2024-27980 hardened child_process spawn,
+  // which refuses to spawn .cmd/extension-less shims from PATH without delegating to cmd.exe.
+  { cwd: pkgDir, stdio: "inherit", shell: true },
 );

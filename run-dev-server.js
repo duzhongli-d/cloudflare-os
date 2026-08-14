@@ -322,8 +322,10 @@ if (wranglerPort) {
 console.log(`\nStarting: wrangler dev ${args.join(" ")}\n`);
 
 try {
+  // shell: true is required on Node 22+ Windows: CVE-2024-27980 hardened child_process spawn,
+  // which refuses to spawn .cmd/extension-less shims from PATH without delegating to cmd.exe.
   execFileSync("pnpm", ["exec", "wrangler", "dev", ...args],
-      { stdio: "inherit", cwd: ROOT });
+      { stdio: "inherit", cwd: ROOT, shell: true });
 } catch (e) {
   // wrangler was killed or exited with an error; the output was already shown
   // via stdio: "inherit", so just propagate the exit code.

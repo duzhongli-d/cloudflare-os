@@ -123,7 +123,9 @@ const needsInstall = needsBuild || !existsSync(NODE_MODULES);
 
 function run(cmd, args) {
   console.log(`\n> ${cmd} ${args.join(" ")}`);
-  execFileSync(cmd, args, { stdio: "inherit", cwd: ROOT });
+  // shell: true is required on Node 22+ Windows: CVE-2024-27980 hardened child_process spawn,
+  // which refuses to spawn .cmd/extension-less shims from PATH without delegating to cmd.exe.
+  execFileSync(cmd, args, { stdio: "inherit", cwd: ROOT, shell: true });
 }
 
 if (needsInstall) {
